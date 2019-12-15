@@ -3,54 +3,39 @@
 import java.io.*;
 
 public class AppController {
-	private BFS _bfs;
-	private DFS _dfs;
-	private AppView _view;
-	private vertex v[];
-	private int[][] graph;
-	private int signal;
+	private prim _prim = new prim();
+	private Dijkstra _dijk = new Dijkstra();
+	private fileInput fi = new fileInput();
+	private int[][] prim_graph, dijkstra_graph, bellman_graph;
+	private vertex[] prim_ver, kruskal_ver, dijkstra_ver, bellman_ver;
 	
 	public AppController() {
-		this._bfs = new BFS();
-		this._dfs = new DFS();
-		this._view = new AppView();
-		this.signal = 0;
+		this.fi = new fileInput();
+		this._prim = new prim();
 	}
-	
 	public void run() throws NumberFormatException, IOException {
-		fileInput();
-		this._view.scan(signal);
-		this._bfs.buildBFS(graph, v, signal);
-		this._dfs.buildDFS(graph, v, signal);
+		this.fi.fileInput("./graph_sample_prim_kruskal.txt", 0);
+		this.prim_graph = this.fi.getGraph();
+		this.prim_ver = this.fi.getVertex();
+		this.kruskal_ver = this.fi.getVertex();
+		this.fi.fileInput("./graph_sample_dijkstra.txt", 1);
+		this.dijkstra_graph = this.fi.getGraph();
+		this.dijkstra_ver = this.fi.getVertex();
+		this.fi.fileInput("./graph_sample_bellman.txt",1);
+		this.bellman_graph = this.fi.getGraph();
+		this.bellman_ver = this.fi.getVertex();
+		this._prim.MST_Prim(prim_graph, prim_ver, 0);
+		//this.printg(prim_graph);
+		this._prim.printPrim(prim_ver);
+		this._dijk.Dijkstra(dijkstra_graph, dijkstra_ver, 0);
+		this._dijk.printDijkstra(dijkstra_ver, 0);
 	}
-	
-	private void fileInput() throws NumberFormatException, IOException {
-		BufferedReader buf = new BufferedReader(new FileReader("C:\\Users\\Free\\Desktop\\Algorithm\\[Al]실습11주차\\graph.txt"));
-
-	    int graphSize = Integer.parseInt(buf.readLine());
-	     
-	    graph = new int[graphSize][graphSize];
-	     
-	    for(int i = 0; i < graphSize; i++) {
-	    	String str = buf.readLine();
-	    	String[] strArr = str.split(" ");
-	        
-	    	for(int j = 0; j < graphSize; j++) {
-	    		graph[i][j] = Integer.parseInt(strArr[j]);
-	    	}
-	    }
-	    buf.close();
-	    
-	    this.v = new vertex[graphSize];
-	    
-	    this.vertexArray();
-	}
-	
-	
-	private void vertexArray() {
-		for(int i =0 ; i < this.v.length; i++) {
-			v[i] = new vertex();
-			v[i].index = i;
+	private void printg(int[][] graph) {//디버깅용
+		for(int i = 0; i < graph.length; i++) {
+			for(int j = 0; j < graph.length; j++) {
+				System.out.print(graph[i][j]+"\t");
+			}
+			System.out.println();
 		}
 	}
 }
